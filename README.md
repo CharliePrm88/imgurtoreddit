@@ -21,15 +21,17 @@ ISTRUZIONI:
 5. collegarsi al link fornito dal server (default: 127.0.0.1:5000)
  
 PROCEDURA:
-1.Per iniziare fai il login su reddit tramite il link fornito dal server
-2.compila il form
-3.clicca su invia
- 
+<ol>
+<li>Per iniziare fai il login su reddit tramite il link fornito dal server</li>
+<li>compila il form</li>
+<li>clicca su invia</li>
+ </ol>
 semplice e pulito! Dopo alcuni secondi (dipende dalla grandezza della foto e dalla potenza della tua linea in upload) troverai la foto pubblicata sul tuo profilo reddit.
  
 ATTENZIONE:
-1.reddit è molto severo nel permettere l'accesso da parte di app di terze parti. Non puoi pubblicare più di una foto ogni 10 minuti (probabilmente per evitare la creazione di spam bot)
-2.reddit raccomanda (you Must - che più che raccomanda si traduce in "lo devi fare") l'utilizzo del subreddit "test" per effettuare appunto dei test. Pertanto se utilizzi quest'app per scopi didattici, per piacere rispetta la regola!
+<ol><li>reddit è molto severo nel permettere l'accesso da parte di app di terze parti. Non puoi pubblicare più di una foto ogni 10 minuti (probabilmente per evitare la creazione di spam bot)</li>
+<li>reddit raccomanda (you Must - che più che raccomanda si traduce in "lo devi fare") l'utilizzo del subreddit "test" per effettuare appunto dei test. Pertanto se utilizzi quest'app per scopi didattici, per piacere rispetta la regola!</li>
+ </ol>
  
 Il codice è quasi totalmente commentato, ma se ci fosse il bisogno di ulteriori chiarimenti, scriveteci!
 Testato su Ubuntu Mate 18.04, Arch Linux e Windows 10.
