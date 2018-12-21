@@ -15,7 +15,7 @@ ISTRUZIONI:
                 pip install flask (Attenzione: se sullo stesso pc è installato anche python2 potrebbero andare in conflitto, si rimanda
                 alla documentazione ufficiale)
     su Debian-based Distro (Debian, Ubuntu, Mint etc): sudo apt-get install python3-flask
-    su Arch-linux: sudo pacman -S python3-flask
+    su Arch-linux: sudo pacman -S python-flask
 3. inserire la proprio chiave reddit, la propria chiave segreta reddit, la propria chiave Imgur nel file main.py
 4. avviare da terminale (prompt dei comandi su windows): python3 main.py (python main.py su windows)
 5. collegarsi al link fornito dal server (default: 127.0.0.1:5000)
