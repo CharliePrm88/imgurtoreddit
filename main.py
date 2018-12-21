@@ -73,7 +73,7 @@ def reddit_callback():
             if os.path.exists(path): #verifico che il file esiste nella cartella di UPLOAD
                 os.remove(path)      #quindi essendo appena stato inviato, lo elimino mantenendo pulito il server
             risposta = submit_link(access_token, title, subreddit, linkIMGUR) #infine invio il link su reddit!
-            return risposta#redirect(url_for('ok')) #let's party!
+            return redirect(url_for('ok')) #let's party!
         else: #i campi sono tutti required, questo else funziona solo con l'accesso via CURL nel caso l'utente dimentica di inserire qualcosa
             return redirect(url_for('errore'))
  
@@ -93,8 +93,9 @@ def get_token(code):
    
 def submit_link(access_token, title, subreddit, url ):
     header = USER_AGENT
-    header.update({"Authorization": "bearer " + access_token, "title": title, "url":url, "sr": subreddit, "kind":"link", "uh":"abcdefg" })
-    response = requests.request('POST', "https://oauth.reddit.com/api/submit", headers=header)
+    header.update({"Authorization": "bearer " + access_token})
+    data = {"title": title, "url":url, "sr": subreddit, "kind":"link", "api_type": "json"}
+    response = requests.request('POST', "https://oauth.reddit.com/api/submit", data=data, headers=header)
     print(response.text)#dovrebbe stampare la risposta del server sulla console
     return response.text
  
@@ -116,7 +117,8 @@ def ok():
   <title>IMGUR to Reddit App</title>
   <body>
   <h1>File correttamente inviato</h1>
-  <a href="/IMGURtoRedditApp">Invia un altro file!</a>
+  <a href="/">Invia un altro file!</a>
+   <h3>Ricorda: non è possibile inviare su reddit due post nell'arco di 10 minuti</h3>
   </body>'''
  
 def sendToIMGURAPI(photo):
