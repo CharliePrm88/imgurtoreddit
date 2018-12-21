@@ -8,8 +8,8 @@ CLIENT_SECRET = "VqJTL4uJE4ysw22m-GLv8wQQ1U8" # Reddit Secret ID
 REDIRECT_URI = "http://localhost:5000/IMGURtoRedditApp" #Reddit redirect dopo oAuth2
 USER_AGENT = {"User-Agent": "RC2018"} #Reddit vuole che sia incorporato altrimenti ti blocca
 IMGUR_CLIENT_ID = 'Client-ID 9833ef015fd6205'
-UPLOAD_FOLDER = '/home/charlie/Scrivania/KM/UPLOAD_FOLDER'
-ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
+UPLOAD_FOLDER = 'UPLOAD_FOLDER'
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif']) #estensioni utilizzabili su IMGUR
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
  
@@ -18,29 +18,25 @@ def homepage():
     text = 'Per prima cosa, <a href="%s">Autenticati via Reddit</a>'
     return text % make_authorization_url()
  
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
- 
-def make_authorization_url():
+def make_authorization_url(): #prepara il link di autorizzazione (Usato nella homepage)
     params = {"client_id": CLIENT_ID,
               "response_type": "code",
               "state": "abcdefg",
               "redirect_uri": REDIRECT_URI, #se non corrisponde a quello dichiarato nella console di reddit non funziona
-              "duration": "temporary",
+              "duration": "temporary", #per lo scope (leggi dopo) utilizzato (postare link su reddit) l'utente può concedere l'accesso per massimo un'ora
               "scope": "submit"}
     url = "https://ssl.reddit.com/api/v1/authorize?" + urllib.parse.urlencode(params)
     return url
  
+ 
+def allowed_file(filename): #questa funzione verifica che il file è della estensione corretta
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+ 
+ 
 @app.route('/IMGURtoRedditApp', methods=['GET','POST'])
-def reddit_callback():
+def IMGURtoRedditApp():
     if request.method == 'GET':
-        error = request.args.get('error', '')
-        if error:
-            return "Error: " + error
-        code = request.args.get('code')
-        global access_token
-        access_token = get_token(code)
         return '''
   <!doctype html>
   <title>IMGUR to Reddit App</title>
@@ -57,6 +53,13 @@ def reddit_callback():
  
     #POST
     if request.method == 'POST':
+        error = request.args.get('error', '')#se c'è un errore nel link per qualche motivo.....
+        if error:
+            return "Error: " + error #ritorna errore con il tipo dell'errore
+        access_token = request.args.get('access_token','')
+        if not access_token:
+            code = request.args.get('code') #altrimenti prendi il codice dal link e richiedi il token
+            access_token = get_token(code)
         # controlla se il file è del tipo ammesso
         if 'file' not in request.files:
             flash('No file part')
@@ -69,16 +72,16 @@ def reddit_callback():
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             path = app.config['UPLOAD_FOLDER'] + '/' + filename
-            linkIMGUR = sendToIMGURAPI(path) #imvio il file su imgur
+            linkIMGUR = sendToIMGURAPI(path) #invio il file su imgur
             if os.path.exists(path): #verifico che il file esiste nella cartella di UPLOAD
                 os.remove(path)      #quindi essendo appena stato inviato, lo elimino mantenendo pulito il server
             risposta = submit_link(access_token, title, subreddit, linkIMGUR) #infine invio il link su reddit!
-            return redirect(url_for('ok')) #let's party!
+            return redirect(url_for('ok', access_token=access_token)) #let's party!
         else: #i campi sono tutti required, questo else funziona solo con l'accesso via CURL nel caso l'utente dimentica di inserire qualcosa
-            return redirect(url_for('errore'))
+            return redirect(url_for('errore', access_token=access_token))
  
-def get_token(code):
-    client_auth = requests.auth.HTTPBasicAuth(CLIENT_ID, CLIENT_SECRET)
+def get_token(code): #prendo il token
+    client_auth = requests.auth.HTTPBasicAuth(CLIENT_ID, CLIENT_SECRET) #compongo il link
     post_data = {"grant_type": "authorization_code",
                  "code": code,
                  "redirect_uri": REDIRECT_URI}
@@ -86,12 +89,23 @@ def get_token(code):
     response = requests.request('POST',"https://ssl.reddit.com/api/v1/access_token",
                              auth=client_auth,
                              headers=headers,
-                             data=post_data)
-    token_json = json.loads(response.text)
-    print(token_json)
+                             data=post_data) #lo invio
+    token_json = json.loads(response.text) #recupero il token dalla risposta in json
     return token_json['access_token']
+ 
+def sendToIMGURAPI(photo): #questa funzione invia la foto sul servizio IMGUR
+    urlImgur = 'https://api.imgur.com/3/image' #compongo il link
+    payloadImgur = {'image': b64encode(open(photo, 'rb').read()) }
+    files = {}
+    headersImgur = {
+  'Authorization': IMGUR_CLIENT_ID
+    }
+    responseImgur = requests.request('POST', urlImgur, headers = headersImgur, data = payloadImgur, files = files, allow_redirects=False) #lo invio
+    data = json.loads(responseImgur.text) #trasformo la stringa in un oggetto json
+    urlFoto = data['data']['link'] #recupero il link della foto da pubblicare su reddit
+    return urlFoto
    
-def submit_link(access_token, title, subreddit, url ):
+def submit_link(access_token, title, subreddit, url ): #questa funzione invia un link su reddit a un prescelto subreddit
     header = USER_AGENT
     header.update({"Authorization": "bearer " + access_token})
     data = {"title": title, "url":url, "sr": subreddit, "kind":"link", "api_type": "json"}
@@ -106,7 +120,7 @@ def errore():
   <body>
   <h1>Errore!</h1>
   <p>Il file selezionato non è ammesso.<br>File ammessi: .png - .jpg - .jpeg - .gif<br>
-  <a href="/">Ritorna alla pagina di upload</a>    
+     <a onclick="window.location='IMGURtoRedditApp'+window.location.search;" style="color:blue;">Ritorna alla pagina di upload</a>    
   </p>    
   </form>
   </body>
@@ -117,21 +131,10 @@ def ok():
   <title>IMGUR to Reddit App</title>
   <body>
   <h1>File correttamente inviato</h1>
-  <a href="/">Invia un altro file!</a>
+  <a onclick="window.location='IMGURtoRedditApp'+window.location.search;" style="color:blue;"> Invia un altro file!</a>
    <h3>Ricorda: non è possibile inviare su reddit due post nell'arco di 10 minuti</h3>
   </body>'''
- 
-def sendToIMGURAPI(photo):
-    urlImgur = 'https://api.imgur.com/3/image'
-    payloadImgur = {'image': b64encode(open(photo, 'rb').read()) }
-    files = {}
-    headersImgur = {
-  'Authorization': IMGUR_CLIENT_ID
-    }
-    responseImgur = requests.request('POST', urlImgur, headers = headersImgur, data = payloadImgur, files = files, allow_redirects=False)
-    data = json.loads(responseImgur.text)
-    urlFoto = data['data']['link']
-    return urlFoto
+    redirect(url_for('IMGURtoRedditApp', code=code))
  
 #pagina deprecata: per l'accesso via CURL usare -F esempio: curl -X POST -F "Title=test" -F "Subreddit=test" -F "file=@nome-del-File.jpg" http://127.0.0.1:5000/IMGURtoRedditApp dopo aver fatto oauth
 #@app.route("/APIpost", methods=['POST'])
