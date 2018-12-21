@@ -2,7 +2,7 @@
 Progetto Reti Di Calcolatori 2018/2019
 
 IMGUR to Reddit App
-Questa applicazione permette l'invio di immagini sul servizio <a href=https://apidocs.imgur.com/>Imgur</a> (API n°1) ed il successivo repost del link su <a href=https://www.reddit.com/dev/api> reddit</a> (API n2 con oAuth2 - entrambi i siti sono commerciali)!
+Questa applicazione permette l'invio di immagini sul servizio <a href=https://apidocs.imgur.com/>Imgur</a> (API n°1) ed il successivo repost del link su <a href=https://www.reddit.com/dev/api> reddit</a> (API n2 con oAuth2 - entrambi i siti sono commerciali)!<br>
 reddit (si scrive tutto minuscolo!) è un sito di social news che permette l'invio ed il commento da parte degli utenti di link.
 Generalmente quando il link è una foto, gli utenti si appoggiano al servizio Imgur per postare la foto, reperire il link e pubblicarlo sul prescelto subreddit (le sezioni di reddit). Con questa app, la magia avviene tutta automaticamente!
  
