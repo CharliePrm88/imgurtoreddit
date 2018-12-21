@@ -1,0 +1,1 @@
+Questo file è inutile ma devo crearlo perchè GITHUB non mi permette l'upload di cartelle vuote, una volta scaricata la repository si può eliminare
