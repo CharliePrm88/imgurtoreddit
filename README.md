@@ -1,5 +1,5 @@
 # imgurtoreddit
-Progetto Reti Di Calcolatori 2018
+Progetto Reti Di Calcolatori 2018/2019
 
 IMGUR to Reddit App
 Questa applicazione permette l'invio di immagini sul servizio <a href=https://apidocs.imgur.com/>Imgur</a> (API n°1) ed il successivo repost del link su <a href=https://www.reddit.com/dev/api> reddit</a> (API n2 con oAuth2 - entrambi i siti sono commerciali)!
