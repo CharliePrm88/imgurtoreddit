@@ -9,16 +9,15 @@ Generalmente quando il link è una foto, gli utenti si appoggiano al servizio Im
 Il codice è scritto in Python3 con l'ausilio di <a href=http://flask.pocoo.org/>Flask</a> un web microframework che permette la creazione di webserver tramite l'utilizzo di decoratori.
  
 ISTRUZIONI:
-1. Scaricare l'intera repository
-2. installare flask:
-    su Windows: dopo aver installato python3 (>=3.4) con la utility pip, aprire un prompt in modalità amministratore e scrivere
-                pip install flask (Attenzione: se sullo stesso pc è installato anche python2 potrebbero andare in conflitto, si rimanda
-                alla documentazione ufficiale)
-    su Debian-based Distro (Debian, Ubuntu, Mint etc): sudo apt-get install python3-flask
-    su Arch-linux: sudo pacman -S python-flask
-3. inserire la proprio chiave reddit, la propria chiave segreta reddit, la propria chiave Imgur nel file main.py
-4. avviare da terminale (prompt dei comandi su windows): python3 main.py (python main.py su windows)
-5. collegarsi al link fornito dal server (default: 127.0.0.1:5000)
+<ol>
+<li> Scaricare l'intera repository</li>
+<li> installare flask:<br>
+<ul><li>su Windows: dopo aver installato python3 (>=3.4) con la utility pip, aprire un prompt in modalità amministratore e scrivere pip install flask (Attenzione: se sullo stesso pc è installato anche python2 potrebbero andare in conflitto, si rimanda  alla documentazione ufficiale)</li>
+<li>su Debian-based Distro (Debian, Ubuntu, Mint etc): sudo apt-get install python3-flask</li>
+ <li>su Arch-linux: sudo pacman -S python-flask</li></ul></li>
+<li> inserire la proprio chiave reddit, la propria chiave segreta reddit, la propria chiave Imgur nel file main.py</li>
+ <li>avviare da terminale (prompt dei comandi su windows): python3 main.py (python main.py su windows)</li>
+<li>collegarsi al link fornito dal server (default: 127.0.0.1:5000)</li></ol>
  
 PROCEDURA:
 <ol>
